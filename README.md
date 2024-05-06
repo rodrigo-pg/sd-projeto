@@ -13,8 +13,8 @@ O projeto é composto por dois microsserviços:
 ## Tecnologias Utilizadas
 * **NodeJS**: Ambos os microsserviços foram feitos em Node.
 * **RabbitMQ**: É utilizado como o middleware de mensagens para comunicação assíncrona entre os microsserviços, garantindo a confiabilidade e escalabilidade da comunicação.
-* **Kubernetes (k8s)**: A orquestração dos microsserviços e do RabbitMQ é realizada no Kubernetes, alta disponibilidade e gerenciamento simplificado. São feito uso de conceitos como ConfigMaps para configuração de serviços, assim como Secrets para armazenamento seguro de segredos, além de outros serviços do k8s, como LoadBalancers, NodePort, etc.
+* **Kubernetes (k8s)**: A orquestração dos microsserviços e do RabbitMQ é realizada no Kubernetes, alta disponibilidade e gerenciamento simplificado. São feito uso de conceitos como **ConfigMaps** para configuração de serviços, assim como **Secrets** para armazenamento seguro de segredos, além de outros serviços do k8s, como **LoadBalancers**, **NodePort**, etc.
 * **Ethereal Mail**: Serviço fake de SMTP para simular entrega de e-mails.
 
 ## Semântica de "At Least Once Delivery"
-Para garantir que os e-mails sejam entregues pelo menos uma vez, utilizamos a funcionalidades de ACKs de filas do RabbitMQ para lidar com possíveis erros de processamento no serviço responsável. Desse modo, garantimos que todas as mensagens serão processadas ao menos uma vez.
+Para garantir que os e-mails sejam entregues pelo menos uma vez, utilizamos a funcionalidades de **ACKs** de filas do RabbitMQ para lidar com possíveis erros de processamento no serviço responsável. Desse modo, garantimos que todas as mensagens serão processadas ao menos uma vez.

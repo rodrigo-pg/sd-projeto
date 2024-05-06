@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: producer-config
+data:
+  rabbit_uri: "amqp://guest:guest@rabbitmq-service.default:5672"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lb-producer
+  labels:
+    app: lb-producer
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 3000
+      targetPort: 3000
+  selector:
+    app: producer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producer
+spec:
+  selector:
+    matchLabels:
+      app: producer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: producer
+    spec:
+      containers:
+        - name: producer
+          image: rodrigopgccc/sd-producer:1.0
+          ports:
+            - containerPort: 3000
+          env:
+            - name: "RABBIT_URI"
+              valueFrom:
+                configMapKeyRef:
+                  name: producer-config
+                  key: rabbit_uri

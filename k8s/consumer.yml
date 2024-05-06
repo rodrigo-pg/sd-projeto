@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: consumer-secrets
+type: Opaque
+data:
+  mail_user: aGVhdGhlci56aWVtZUBldGhlcmVhbC5lbWFpbA==
+  mail_pass: Ylk2YWRyN0E1cVF4OXQ2QUc1
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: consumer-config
+data:
+  rabbit_uri: "amqp://guest:guest@rabbitmq-service.default:5672"
+  mail_host: "smtp.ethereal.email"
+  mail_port: "587"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer
+spec:
+  selector:
+    matchLabels:
+      app: consumer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+        - name: consumer
+          image: rodrigopgccc/sd-consumer:1.0
+          env:
+            - name: "RABBIT_URI"
+              valueFrom:
+                configMapKeyRef:
+                  name: consumer-config
+                  key: rabbit_uri
+            - name: "MAIL_HOST"
+              valueFrom:
+                configMapKeyRef:
+                  name: consumer-config
+                  key: mail_host
+            - name: "MAIL_PORT"
+              valueFrom:
+                configMapKeyRef:
+                  name: consumer-config
+                  key: mail_port
+            - name: "MAIL_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: consumer-secrets
+                  key: mail_user
+            - name: "MAIL_PASS"
+              valueFrom:
+                secretKeyRef:
+                  name: consumer-secrets
+                  key: mail_pass
